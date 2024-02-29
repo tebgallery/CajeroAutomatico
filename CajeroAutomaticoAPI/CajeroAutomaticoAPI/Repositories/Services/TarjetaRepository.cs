@@ -31,6 +31,7 @@ namespace CajeroAutomaticoAPI.Repositories
             }
             else if (pin != null && tarjeta.Pin != pin)
             {
+                response.Id = tarjeta.IdTarjeta;
                 response.status.Message = "PIN incorrecto";
                 response.status.Code = 2;
             }
@@ -75,18 +76,47 @@ namespace CajeroAutomaticoAPI.Repositories
             return response;
         }
 
-        public void UpdateBloqueada(int id, bool bloqueada) 
+        public TarjetaResponse BloquearTarjeta(int id) 
         {
-            var tarjeta = _context.Tarjetas.FirstOrDefault(t => t.IdTarjeta == id);
+            TarjetaResponse response = new TarjetaResponse();
+            var tarjeta = _context.Tarjetas.Find(id);
             if (tarjeta != null)
             {
-                tarjeta.Bloqueada = bloqueada;
+                tarjeta.Bloqueada = true;
                 _context.SaveChanges();
+                response.status = new Status { Message = "Tarjeta Bloqueada Correctamente", Code = 0 };
             }
             else
             {
-                throw new ArgumentException($"No se encontró la tarjeta con el ID: {id}");
+                response.status = new Status { Message = "No se encontró la tarjeta", Code = 1 };
             }
+
+            return response;
+
+        }
+
+        public TarjetaResponse UpdateBalance(int id, decimal amount)
+        {
+            TarjetaResponse response = new TarjetaResponse();
+            var tarjeta = _context.Tarjetas.Find(id);
+            if (tarjeta != null)
+            {
+                if (amount <= tarjeta.Balance)
+                {
+                    tarjeta.Balance -= amount;
+                    _context.SaveChanges();
+                    response.status = new Status { Message = "Saldo de la tarjeta Actualizado", Code = 0 };
+                }
+                else
+                {
+                    response.status = new Status { Message = "El monto del retiro excede el saldo disponible", Code = 1 };
+                }
+            }
+            else
+            {
+                response.status = new Status { Message = "No se encontró la tarjeta", Code = 1 };
+            }
+            return response;
         }
 
         public void SaveChanges()

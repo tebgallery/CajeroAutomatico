@@ -33,7 +33,6 @@ const Home = () => {
   const getTarjeta = async (num) => {
     try {
       const response = await axios.get(url + num);
-      console.log(response.data);
       handleNavigate(response,num);
     } catch (error) {
       console.error("Error al obtener la tarjeta:", error);
@@ -43,7 +42,7 @@ const Home = () => {
   const handleNavigate = (response,num) => {
     if (response.data.status.code != 0) {
         const error = response.data.status.message;
-        navigate("/errorPage", { state: { errorMessage: error } });
+        navigate("/errorPage", { state: { errorMessage: error, previuousPage: '/Home' } });
       }
       else{
         navigate("/pinEntry", { state: { num: num } });

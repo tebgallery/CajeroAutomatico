@@ -3,13 +3,19 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTriangleExclamation } from "@fortawesome/free-solid-svg-icons";
 
-const ErrorPage = () => {
+const ErrorPage = ({id}) => {
   const location = useLocation();
   const navigate = useNavigate();
   const errorMessage = location.state?.errorMessage;
+  const previousPage = location.state?.previuousPage;
 
-  const handleNavigateHome = () => {
-    navigate('/home');
+  const handleNavigatePreviousPage = () => {
+    if(previousPage === '/operations/withdrawal'){
+      navigate(previousPage, { state: { id: id } });
+    }
+    else{
+      navigate(previousPage);
+    }
   }
 
   return (
@@ -29,7 +35,7 @@ const ErrorPage = () => {
 
         <div className="w-full flex items-center justify-center">
             <button className="bg-red-400 hover:bg-red-600 px-8 py-2 rounded-2xl text-white duration-500 transition-transform transform hover:scale-105 "
-                onClick={handleNavigateHome}
+                onClick={handleNavigatePreviousPage}
             >
                 Atras
             </button>

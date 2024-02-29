@@ -46,21 +46,31 @@ namespace CajeroAutomaticoAPI.Controllers
         }
 
 
-        [HttpPut("Bloquear/{id}")]
+        [HttpPut("BloquearTarjeta/{id}")]
         public IActionResult BloquearTarjeta(int id)
         {
             try
             {
-                _tarjetaRepository.UpdateBloqueada(id, true); // Cambio en la llamada al repositorio
-                return Ok(new { message = "La tarjeta ha sido bloqueada exitosamente" });
-            }
-            catch (ArgumentException ex)
-            {
-                return NotFound(new { message = ex.Message });
+                TarjetaResponse response = _tarjetaRepository.BloquearTarjeta(id);
+                return Ok(response);
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { message = $"Ocurrió un error al bloquear la tarjeta: {ex.Message}" });
+                return StatusCode(500, new { message = $"Error al actualizar el estado de bloqueo de la tarjeta: {ex.Message}" });
+            }
+        }
+
+        [HttpPut("UpdateBalance/{id}")]
+        public IActionResult UpdateBalance(int id,decimal amount)
+        {
+            try
+            {
+                TarjetaResponse response = _tarjetaRepository.UpdateBalance(id, amount);
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = $"Error al actualizar el estado de bloqueo de la tarjeta: {ex.Message}" });
             }
         }
 

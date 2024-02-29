@@ -2,6 +2,7 @@ using CajeroAutomaticoAPI.Models;
 using CajeroAutomaticoAPI.Repositories.Interfaces;
 using CajeroAutomaticoAPI.Repositories;
 using Microsoft.EntityFrameworkCore;
+using CajeroAutomaticoAPI.Repositories.Services;
 
 namespace CajeroAutomaticoAPI
 {
@@ -17,6 +18,7 @@ namespace CajeroAutomaticoAPI
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
             builder.Services.AddScoped<ITarjetaRepository, TarjetaRepository>();
+            builder.Services.AddScoped<IOperacionRepository, OperacionRepository>();
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();

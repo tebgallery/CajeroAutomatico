@@ -15,11 +15,18 @@ const PinEntry = () => {
   const getTarjeta = async (num,pin) => {
     try {
       const response = await axios.get(url + num+"?pin="+pin);
-      console.log(response.data);
       validatePin(response,pin);
 
     } catch (error) {
       console.error("Error al obtener la tarjeta:", error);
+    }
+  };
+
+  const bloquearTarjeta = async (ID) => {
+    try {
+      await axios.put(url+`BloquearTarjeta/${ID}`);
+    } catch (error) {
+      console.error("Error al bloquear la tarjeta:", error);
     }
   };
   
@@ -35,9 +42,7 @@ const PinEntry = () => {
     }
   };
 
-
-
-  const validatePin = (response,pin) => {
+  const validatePin = (response) => {
 
     if(response.data.status.code == 2){
       setPinNumber("");
@@ -47,9 +52,9 @@ const PinEntry = () => {
         setErrorMessage(`PIN incorrecto, le quedan ${attempts - 1} intentos`);
 
         if (attempts === 1) {
-          bloquearTarjeta();
+          bloquearTarjeta(response.data.id);
           const error = "La tarjeta se bloqueó";
-          handleNavigate("/errorPage", { state: { errorMessage: error } });
+          handleNavigate("/errorPage", { state: { errorMessage: error, previuousPage: '/Home' } });
         }
       }
 
@@ -59,18 +64,10 @@ const PinEntry = () => {
     }
   };
 
-  const handleNavigate = (url) => {
-    navigate(url);
+  const handleNavigate = (url,{state}) => {
+    navigate(url,{state});
   };
 
-  const bloquearTarjeta = async (ID) => {
-    try {
-      await axios.put(`https://localhost:44365/api/Tarjetas/Bloquear/${ID}`);
-      console.log("Tarjeta bloqueada exitosamente");
-    } catch (error) {
-      console.error("Error al bloquear la tarjeta:", error);
-    }
-  };
 
   return (
     <>
@@ -78,12 +75,12 @@ const PinEntry = () => {
         <div className="bg-blue-900 p-8 shadow-2xl">
             <div className="flex items-center justify-around mb-8">
             <button
-                className="bg-orange-400 px-8 py-4 hover:bg-orange-500 font-semibold"
+                className="bg-orange-400 px-8 py-4 hover:bg-orange-500 text-white font-semibold"
                 onClick= {() =>{handleNavigate("/home")}}
             >
                 Salir
             </button>
-            <h3 className="text-6xl text-white font-bold">ATM</h3>
+            <h2 className="text-6xl text-white font-bold">ATM</h2>
             <p className="w-26 text-lg text-white font-semibold">Ingreso PIN</p>
           </div>
           <div className="my-4">

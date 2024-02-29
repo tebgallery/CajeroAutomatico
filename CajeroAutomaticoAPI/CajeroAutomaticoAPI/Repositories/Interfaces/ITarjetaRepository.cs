@@ -1,4 +1,5 @@
 ﻿using CajeroAutomaticoAPI.Models;
+using Microsoft.AspNetCore.Components.Web;
 
 namespace CajeroAutomaticoAPI.Repositories.Interfaces
 {
@@ -9,7 +10,9 @@ namespace CajeroAutomaticoAPI.Repositories.Interfaces
 
         TarjetaResponse GetTarjetaById(int id);
 
-        void UpdateBloqueada(int id, bool bloqueada);
+        TarjetaResponse BloquearTarjeta(int id);
+
+        TarjetaResponse UpdateBalance(int id, decimal amount);
 
         void SaveChanges();
     }
