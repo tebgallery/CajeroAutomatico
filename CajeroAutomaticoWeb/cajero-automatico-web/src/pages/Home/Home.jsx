@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import Keyboard from "../../components/Keyboard/Keyboard";
 import axios from "axios";
-import { Link as RouterLink, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const Home = () => {
   const navigate = useNavigate();
-  const url = "https://localhost:44365/api/Tarjetas";
+  const url = "https://localhost:44365/api/Tarjetas/";
   const [cardNumber, setCardNumber] = useState("");
 
   const handleKeyPress = (digit) => {
@@ -26,44 +26,52 @@ const Home = () => {
 
     if (digit == "accept" && approvedCard) {
       const num = cardNumber.replace(/-/g, "");
-      getTarjetasByNum(num);
+      getTarjeta(num);
     }
   };
 
-  const getTarjetasByNum = async (num) => {
+  const getTarjeta = async (num) => {
     try {
-      const response = await axios.get(url + "/" + num);
-
-      if (response.data.message != null) {
-        const error = response.data.message;
-        navigate("/errorPage", { state: { errorMessage: error } });
-      }
-      else{
-        const pin = response.data.pin;
-        navigate("/pinEntry", { state: { pin: pin } });
-      }
+      const response = await axios.get(url + num);
+      console.log(response.data);
+      handleNavigate(response,num);
     } catch (error) {
       console.error("Error al obtener la tarjeta:", error);
     }
   };
 
+  const handleNavigate = (response,num) => {
+    if (response.data.status.code != 0) {
+        const error = response.data.status.message;
+        navigate("/errorPage", { state: { errorMessage: error } });
+      }
+      else{
+        navigate("/pinEntry", { state: { num: num } });
+      }
+  }
+
   return (
     <>
-      <div className="py-4">
-        <h1 className="text-5xl text-center mb-4">Bienvenido!</h1>
-        <p className="text-2xl text-center">
-          Para realizar sus operaciones ingrese los 16 digitos de su tarjeta
-        </p>
-      </div>
-      <div className="w-full flex justify-center items-center h-screen bg-stone-200">
-        <div className="relative bg-zinc-800 rounded-3xl">
-          <input
-            type="text"
-            value={cardNumber}
-            readOnly
-            className="bg-transparent w-full h-12 text-center text-xl font-bold outline-none rounded-md p-2 text-white placeholder-white"
-          />
-          <Keyboard onKeyPress={handleKeyPress} />
+      <div className="fixed top-0 left-0 w-full h-full bg-gray-300 flex items-center justify-center">
+        <div className="bg-blue-900 p-8 shadow-2xl">
+            <div className="flex items-center justify-center mb-8">
+            <h3 className="text-6xl text-white font-bold">ATM</h3>
+        </div>
+          <div className="my-4">
+          <p className="text-2xl text-center text-white italic mb-8">
+            Ingrese los 16 digitos de su tarjeta para continuar
+          </p>
+
+            <input
+              type="text"
+              value={cardNumber}
+              readOnly
+              className="mb-8 bg-transparent border rounded-2xl border-white w-full h-12 text-center text-xl font-bold outline-none rounded-md p-2 text-white placeholder-white"
+            />
+            </div>
+          <div className="relative w-full flex items-center justify-center">
+            <Keyboard onKeyPress={handleKeyPress} />
+          </div>
         </div>
       </div>
     </>

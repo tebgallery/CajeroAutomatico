@@ -5,10 +5,12 @@ namespace CajeroAutomaticoAPI.Repositories.Interfaces
 
     public interface ITarjetaRepository
     {
-        IEnumerable<Tarjeta> GetAll();
-        Tarjeta GetByNum(long num);
+        TarjetaResponse ValidateTarjeta(long num, int? pin);
 
-        /*Tarjeta Update(Tarjeta t);*/
+        TarjetaResponse GetTarjetaById(int id);
+
+        void UpdateBloqueada(int id, bool bloqueada);
+
         void SaveChanges();
     }
 }

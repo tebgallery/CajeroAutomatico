@@ -1,4 +1,5 @@
-﻿using CajeroAutomaticoAPI.Repositories.Interfaces;
+﻿using CajeroAutomaticoAPI.Models;
+using CajeroAutomaticoAPI.Repositories.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,30 +17,52 @@ namespace CajeroAutomaticoAPI.Controllers
         }
 
         [HttpGet("{numero}")]
-        public IActionResult GetTarjetasByNum(long numero)
+        public IActionResult ValidateTarjeta(long numero, int? pin)
         {
             try
             {
-                var tarjeta = _tarjetaRepository.GetByNum(numero);
-
-                if (tarjeta == null)
-                {
-                    return StatusCode(200,new { message = "No se encontró la tarjeta" });
-                }
-
-                if (tarjeta.Bloqueada)
-                {
-                    return StatusCode(200, new { message = "La tarjeta se encuentra bloqueada" });
-                }
-
-                return Ok(tarjeta);
+                TarjetaResponse response = _tarjetaRepository.ValidateTarjeta(numero, pin);
+                return Ok(response);
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { message = $"Ocurrió un error al buscar la tarjeta: {ex.Message}" });
+                return StatusCode(500, new { message = $"Ocurrió un error al validar la tarjeta: {ex.Message}" });
             }
         }
 
+        [HttpGet("GetById/{id}")]
+        public IActionResult GetTarjetaById(int id)
+        {
+            try
+            {
+                TarjetaResponse response = _tarjetaRepository.GetTarjetaById(id);
+
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Ocurrió un error al buscar la tarjeta: {ex.Message}");
+            }
+        }
+
+
+        [HttpPut("Bloquear/{id}")]
+        public IActionResult BloquearTarjeta(int id)
+        {
+            try
+            {
+                _tarjetaRepository.UpdateBloqueada(id, true); // Cambio en la llamada al repositorio
+                return Ok(new { message = "La tarjeta ha sido bloqueada exitosamente" });
+            }
+            catch (ArgumentException ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = $"Ocurrió un error al bloquear la tarjeta: {ex.Message}" });
+            }
+        }
 
     }
 }

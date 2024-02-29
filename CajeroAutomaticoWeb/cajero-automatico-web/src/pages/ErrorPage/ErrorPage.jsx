@@ -31,7 +31,7 @@ const ErrorPage = () => {
             <button className="bg-red-400 hover:bg-red-600 px-8 py-2 rounded-2xl text-white duration-500 transition-transform transform hover:scale-105 "
                 onClick={handleNavigateHome}
             >
-                Volver al Home
+                Atras
             </button>
         </div>
       </div>
