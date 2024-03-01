@@ -16,7 +16,7 @@ const Withdrawal = () => {
   useEffect(() => {
     if (operationCode == 2) {
       const operationForm = {
-        idTarjeta: ID,
+        iD_Tarjeta: ID,
         fechaHora: new Date(),
         codigoOperacion: operationCode,
         cantidadRetirada: parseFloat(amount),

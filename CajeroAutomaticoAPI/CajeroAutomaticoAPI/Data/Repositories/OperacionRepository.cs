@@ -1,4 +1,5 @@
-﻿using CajeroAutomaticoAPI.Data.Models;
+﻿using CajeroAutomaticoAPI.Data.DB;
+using CajeroAutomaticoAPI.Data.Models;
 using System.Runtime.CompilerServices;
 
 namespace CajeroAutomaticoAPI.Data.Repositories
@@ -23,7 +24,7 @@ namespace CajeroAutomaticoAPI.Data.Repositories
         {
             OperacionResponse response = new OperacionResponse();
 
-            var tarjetaResponse = await _tarjetaRepository.GetTarjetaByIdAsync(operacion.IdTarjeta);
+            var tarjetaResponse = await _tarjetaRepository.GetTarjetaByIdAsync(operacion.ID_Tarjeta);
 
             if (tarjetaResponse.status.Code == 0){
 
@@ -37,7 +38,7 @@ namespace CajeroAutomaticoAPI.Data.Repositories
                     }
                     else
                     {
-                        await _tarjetaRepository.UpdateBalanceAsync(operacion.IdTarjeta, operacion.CantidadRetirada);
+                        await _tarjetaRepository.UpdateBalanceAsync(operacion.ID_Tarjeta, operacion.CantidadRetirada);
 
                         _context.Operaciones.Add(operacion);
                         _context.SaveChanges();

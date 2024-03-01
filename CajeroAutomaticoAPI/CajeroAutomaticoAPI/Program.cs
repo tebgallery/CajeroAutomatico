@@ -1,4 +1,4 @@
-using CajeroAutomaticoAPI.Data.Models;
+using CajeroAutomaticoAPI.Data.DB;
 using CajeroAutomaticoAPI.Data.Repositories;
 using Microsoft.EntityFrameworkCore;
 
@@ -15,6 +15,7 @@ namespace CajeroAutomaticoAPI
 
             builder.Services.AddScoped<ITarjetaRepository, TarjetaRepository>();
             builder.Services.AddScoped<IOperacionRepository, OperacionRepository>();
+
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
@@ -28,6 +29,12 @@ namespace CajeroAutomaticoAPI
             });
 
             var app = builder.Build();
+
+            using (var scope = app.Services.CreateScope())
+            {
+                var context = scope.ServiceProvider.GetRequiredService<CajeroAutomaticoDbContext>();
+                context.Database.Migrate();
+            }
 
             app.UseCors("AllowOrigin");
 
