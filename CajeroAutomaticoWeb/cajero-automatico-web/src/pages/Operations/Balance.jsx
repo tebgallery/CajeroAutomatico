@@ -2,9 +2,10 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 import Navbar from "../../components/Navbar/Navbar";
+import config from "../../config";
 
 const Balance = () => {
-    const url = "https://localhost:44365/api/Tarjetas/GetById/";
+    const url = config.apiUrl + '/Tarjetas/GetById/';
     const navigate = useNavigate();
     const location = useLocation();
     const ID = location.state?.id;

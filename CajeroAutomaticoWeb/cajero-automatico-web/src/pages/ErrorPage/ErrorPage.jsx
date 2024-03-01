@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTriangleExclamation } from "@fortawesome/free-solid-svg-icons";
 
-const ErrorPage = ({id}) => {
+const ErrorPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const ID = location.state?.id;

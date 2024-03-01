@@ -2,10 +2,11 @@ import React, { useState } from "react";
 import Keyboard from "../../components/Keyboard/Keyboard";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import config from "../../config";
 
 const Home = () => {
+  const url = config.apiUrl + '/Tarjetas/';
   const navigate = useNavigate();
-  const url = "https://localhost:44365/api/Tarjetas/";
   const [cardNumber, setCardNumber] = useState("");
   const exampleCardNumber = "XXXX - XXXX - XXXX - XXXX";
 

@@ -2,9 +2,10 @@ import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import Navbar from "../../components/Navbar/Navbar";
+import config from "../../config";
 
 const Operations = () => {
-  const url = "https://localhost:44365/api/Operaciones";
+  const url = config.apiUrl + '/Operaciones';
   const navigate = useNavigate();
   const location = useLocation();
   const ID = location.state?.id;

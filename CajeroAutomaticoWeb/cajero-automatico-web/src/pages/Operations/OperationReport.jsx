@@ -4,9 +4,10 @@ import { faCircleCheck } from "@fortawesome/free-solid-svg-icons";
 import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import Navbar from "../../components/Navbar/Navbar";
+import config from "../../config";
 
 const OperationReport = () => {
-  const url = "https://localhost:44365/api/Tarjetas/UltimaOperacion/";
+  const url = config.apiUrl + '/Tarjetas/UltimaOperacion/';
   const location = useLocation();
   const ID = location.state?.id;
   const navigate = useNavigate();

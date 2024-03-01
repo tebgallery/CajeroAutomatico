@@ -3,9 +3,10 @@ import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 import Keyboard from "../../components/Keyboard/Keyboard";
 import Navbar from "../../components/Navbar/Navbar";
+import config from "../../config";
 
 const Withdrawal = () => {
-  const url = "https://localhost:44365/api/";
+  const url = config.apiUrl + '/Operaciones';
   const navigate = useNavigate();
   const location = useLocation();
   const ID = location.state?.id;
@@ -28,7 +29,7 @@ const Withdrawal = () => {
 
   const addOperation = async (operationForm) => {
     try {
-      const response = await axios.post(url + "Operaciones", operationForm);
+      const response = await axios.post(url, operationForm);
       handleErrorMessage(response);
     } catch (error) {
       console.error("Error al obtener la tarjeta:", error);

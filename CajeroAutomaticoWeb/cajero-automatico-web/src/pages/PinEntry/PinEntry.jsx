@@ -3,15 +3,16 @@ import { useLocation, useNavigate } from "react-router-dom";
 import Keyboard from "../../components/Keyboard/Keyboard";
 import axios from "axios";
 import Navbar from "../../components/Navbar/Navbar";
+import config from "../../config";
 
 const PinEntry = () => {
+  const url = config.apiUrl + '/Tarjetas/';
   const navigate = useNavigate();
   const location = useLocation();
   const cardNumber = location.state?.num;
   const [pinNumber, setPinNumber] = useState("");
   const [attempts, setAttempts] = useState(4);
   const [errorMessage, setErrorMessage] = useState(null);
-  const url = "https://localhost:44365/api/Tarjetas/";
 
   const validateTarjeta = async (num, pin) => {
     try {
@@ -24,11 +25,9 @@ const PinEntry = () => {
 
   const updateIntentos = async (ID, attempts) => {
     try {
-      console.log(ID, attempts);
       const response = await axios.put(
         url + "UpdateIntentos/" + ID + "?intentos=" + attempts
       );
-      console.log(response.data);
       handleAttempts(response);
     } catch (error) {
       console.error("Error al actualizar intentos:", error);

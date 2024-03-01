@@ -158,10 +158,10 @@ namespace CajeroAutomaticoAPI.Data.Repositories
         }
 
         public async Task<IEnumerable<LastOperation>> GetLastOperationAsync(int idTarjeta)
-        {        
+        {
             var id = new SqlParameter("@CardId", idTarjeta);
             var response = await _context.LastOperation
-            .FromSqlRaw("EXEC sp_ObtenerUltimaOperacion @CardId", id).ToListAsync();
+                .FromSqlRaw("EXEC sp_ObtenerUltimaOperacion @CardId", id).ToListAsync();
 
             return response;
         }
