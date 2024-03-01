@@ -1,4 +1,5 @@
 ﻿using Azure;
+using CajeroAutomaticoAPI.Data.DB;
 using CajeroAutomaticoAPI.Data.Models;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
@@ -46,15 +47,15 @@ namespace CajeroAutomaticoAPI.Data.Repositories
                 response.status.Message = "La tarjeta está bloqueada";
                 response.status.Code = 3;
             }
-            else if (pin != null && tarjeta.Pin != pin)
+            else if (pin != null && tarjeta.PIN != pin)
             {
-                response.Id = tarjeta.IdTarjeta;
+                response.Id = tarjeta.ID_Tarjeta;
                 response.status.Message = "PIN incorrecto";
                 response.status.Code = 2;
             }
             else
             {
-                response.Id = tarjeta.IdTarjeta;
+                response.Id = tarjeta.ID_Tarjeta;
                 response.status.Message = "La tarjeta existe";
                 response.status.Code = 0;
             }
@@ -67,10 +68,10 @@ namespace CajeroAutomaticoAPI.Data.Repositories
             var response = new TarjetaResponse();
 
             var tarjeta = await _context.Tarjetas
-                .Where(t => t.IdTarjeta == id)
+                .Where(t => t.ID_Tarjeta == id)
                 .Select(t => new
                 {
-                    t.IdTarjeta,
+                    t.ID_Tarjeta,
                     t.Numero,
                     t.FechaVencimiento,
                     t.Balance
@@ -83,7 +84,7 @@ namespace CajeroAutomaticoAPI.Data.Repositories
             }
             else
             {
-                response.Id = tarjeta.IdTarjeta;
+                response.Id = tarjeta.ID_Tarjeta;
                 response.Numero = tarjeta.Numero;
                 response.FechaVencimiento = tarjeta.FechaVencimiento;
                 response.Balance = tarjeta.Balance;
