@@ -1,6 +1,6 @@
 --- Cajero Automatico ---
 
-Arquitectura de la Apliación:
+Arquitectura de la Aplicación:
 -----------------------------
 
 Frontend: 
