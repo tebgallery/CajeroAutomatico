@@ -16,22 +16,18 @@ public partial class CajeroAutomaticoDbContext : DbContext
     {
     }
 
-    public DbSet<Operacion> Operaciones { get; set; }
+    public virtual DbSet<Operacion> Operaciones { get; set; }
 
-    public DbSet<Tarjeta> Tarjetas { get; set; }
+    public virtual DbSet<Tarjeta> Tarjetas { get; set; }
 
-    public DbSet<TipoOperacion> TipoOperacion { get; set; }
-
-    public DbSet<LastOperation> LastOperation { get; set; }
+    public virtual DbSet<LastOperation> LastOperation { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Operacion>().ToTable("Operaciones");
         modelBuilder.Entity<Tarjeta>().ToTable("Tarjetas");
+        modelBuilder.Entity<LastOperation>().ToView("LastOperationView").HasNoKey();
 
-        modelBuilder.Entity<TipoOperacion>().ToTable("Tipo_Operacion");
-
-        modelBuilder.Entity<LastOperation>().HasNoKey();
 
         OnModelCreatingPartial(modelBuilder);
     }

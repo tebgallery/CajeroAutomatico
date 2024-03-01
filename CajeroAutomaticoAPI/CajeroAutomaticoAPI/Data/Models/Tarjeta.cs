@@ -28,6 +28,4 @@ public class Tarjeta
 
     [Required]
     public DateOnly FechaVencimiento { get; set; }
-
-    public ICollection<Operacion> Operaciones { get; set; }
 }

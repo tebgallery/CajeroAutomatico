@@ -30,6 +30,7 @@ const Withdrawal = () => {
   const addOperation = async (operationForm) => {
     try {
       const response = await axios.post(url, operationForm);
+      console.log(response.data);
       handleErrorMessage(response);
     } catch (error) {
       console.error("Error al obtener la tarjeta:", error);
