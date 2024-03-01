@@ -12,10 +12,12 @@ const OperationReport = () => {
   const ID = location.state?.id;
   const navigate = useNavigate();
   const [cardData, setCardData] = useState(null);
+  console.log("ID:",ID);
 
   const getTarjetaById = async (ID) => {
     try {
       const response = await axios.get(url + ID);
+      console.log(response.data);
       setCardData(response.data);
     } catch (error) {
       console.error("Error al obtener la tarjeta:", error);

@@ -38,20 +38,13 @@ namespace CajeroAutomaticoAPI.Data.Repositories
                     }
                     else
                     {
-                        await _tarjetaRepository.UpdateBalanceAsync(operacion.ID_Tarjeta, operacion.CantidadRetirada);
-
-                        _context.Operaciones.Add(operacion);
-                        _context.SaveChanges();
-
-                        response.status.Code = 0;
-                        response.status.Message = "Operacion creada correctamente";
+                            await _tarjetaRepository.UpdateBalanceAsync(operacion.ID_Tarjeta, operacion.CantidadRetirada);
+                            response.status.Code = 0;
+                            response.status.Message = "Operacion creada correctamente";
                     }
                 }
                 else
                 {
-                    _context.Operaciones.Add(operacion);
-                    _context.SaveChanges();
-
                     response.status.Code = 0;
                     response.status.Message = "Operacion creada correctamente";
                 }
@@ -60,6 +53,19 @@ namespace CajeroAutomaticoAPI.Data.Repositories
             {
                 response.status.Code = 1;
                 response.status.Message = tarjetaResponse.status.Message;
+            }
+
+            if (response.status.Code == 0)
+            {
+                try
+                {
+                    _context.Operaciones.Add(operacion);
+                    await _context.SaveChangesAsync();
+                }
+                catch (Exception ex)
+                {
+                    throw ex;
+                }
             }
             return response;
         }
