@@ -1,56 +1,73 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
-
+import Navbar from "../../components/Navbar/Navbar";
 
 const Operations = () => {
-    const url = "https://localhost:44365/api/Operaciones";
-    const navigate = useNavigate();
-    const location = useLocation();
-    const ID = location.state?.id;
-    const [operationCode,setOperationCode] = useState(null);
+  const url = "https://localhost:44365/api/Operaciones";
+  const navigate = useNavigate();
+  const location = useLocation();
+  const ID = location.state?.id;
+  const [operationCode, setOperationCode] = useState(null);
 
+  useEffect(() => {
+    if (operationCode == 1) {
+      const operationForm = {
+        idTarjeta: ID,
+        fechaHora: new Date(),
+        codigoOperacion: operationCode,
+      };
+      addOperation(operationForm);
 
-    useEffect(() => {
-        if (operationCode == 1) {
-            const operationForm = {
-                idTarjeta: ID,
-                fechaHora: new Date(),
-                codigoOperacion: operationCode
-            };
-            addOperation(operationForm);
-
-            navigate('/operations/balance', { state: { id: ID } });
-        }
-        else if(operationCode == 2){
-            navigate('/operations/withdrawal', { state: { id: ID } });
-        }
-    }, [operationCode]);
-
-    const addOperation = async (operationForm) => { 
-        try {
-            const response = await axios.post(url, operationForm);
-            console.log("Operacion creada correctamente");
-      
-        } catch (error) {
-            console.error("Error al obtener la tarjeta:", error);
-        }
+      navigate("/operations/balance", { state: { id: ID } });
+    } else if (operationCode == 2) {
+      navigate("/operations/withdrawal", { state: { id: ID } });
     }
+  }, [operationCode]);
 
-    return (
-        <div className="fixed top-0 left-0 w-full h-full bg-gray-300 flex items-center justify-center">
-            <div className="bg-blue-900 p-8 shadow-2xl">
-                <p className='text-2xl text-center text-white italic font-semibold mb-8'>Elija su operacion</p>
-                <button className='w-full bg-emerald-500 hover:bg-emerald-600 px-12 py-2 text-white font-bold my-4 duration-500 transition-transform transform hover:scale-105'
-                    onClick={() => { setOperationCode(1) }} 
-                >Balance</button>
-                <button className='w-full bg-emerald-500 hover:bg-emerald-600 px-12 py-2 text-white font-bold my-4 duration-500 transition-transform transform hover:scale-105'
-                    onClick={() => { setOperationCode(2) }} 
-                >Retiro</button>
-                <button className='w-full bg-red-500  hover:bg-red-600 px-12 py-2 text-white font-bold my-4 duration-500 transition-transform transform hover:scale-105'>Salir</button>
-            </div>
+  const addOperation = async (operationForm) => {
+    try {
+      const response = await axios.post(url, operationForm);
+      console.log("Operacion creada correctamente");
+    } catch (error) {
+      console.error("Error al obtener la tarjeta:", error);
+    }
+  };
+
+  const navigateToHome = () => {
+    navigate("/Home");
+  };
+
+  return (
+    <div className="w-full h-screen bg-neutral-950">
+      <Navbar sectionTitle = "Operaciones"/>
+      <div className="p-8 shadow-2xl">
+        <p className="text-5xl text-center text-white italic font-semibold mb-20">
+          Elija su operación
+        </p>
+        <div className="w-full flex items-center justify-center">
+          <div className="w-10/12 flex items-center justify-around">
+            <button
+              className="bg-gray-700 hover:bg-yellow-500 w-96 h-20 my-6 py-6 hover:bg-yellow-500 text-white text-center text-3xl rounded-3xl duration-500 transition-transform transform hover:scale-105"
+              onClick={() => {
+                setOperationCode(1);
+              }}
+            >
+              Balance
+            </button>
+            <button
+              className="bg-gray-700 hover:bg-yellow-500 w-96 h-20 my-6 py-6 hover:bg-yellow-500 text-white text-center text-3xl rounded-3xl duration-500 transition-transform transform hover:scale-105"
+              onClick={() => {
+                setOperationCode(2);
+              }}
+            >
+              Retiros
+            </button>
+          </div>
         </div>
-    );
+      </div>
+    </div>
+  );
 };
 
 export default Operations;

@@ -1,5 +1,5 @@
-﻿using CajeroAutomaticoAPI.Models;
-using CajeroAutomaticoAPI.Repositories.Interfaces;
+﻿using CajeroAutomaticoAPI.Data.Models;
+using CajeroAutomaticoAPI.Data.Repositories;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,11 +17,11 @@ namespace CajeroAutomaticoAPI.Controllers
         }
 
         [HttpPost]
-        public IActionResult AddOperation(Operacion operacion)
+        public async Task<IActionResult> AddOperation(Operacion operacion)
         {
             try
             {
-                OperacionResponse response = _operacionRepository.AddOperation(operacion);
+                var response = await _operacionRepository.AddOperationAsync(operacion);
                 return Ok(response);
             }
             catch (Exception ex)

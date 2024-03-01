@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
-import creditCard from '../../img/credit-card.png';
+import Navbar from "../../components/Navbar/Navbar";
 
 const Balance = () => {
     const url = "https://localhost:44365/api/Tarjetas/GetById/";
@@ -23,18 +23,40 @@ const Balance = () => {
 
     useEffect(() => {
         getTarjetaById(ID);
-    }, [ID]); // Agregar ID como dependencia para que useEffect se ejecute cuando cambie
+    }, [ID]);
 
+    const formatCardNumber = (cardNumber) => {
+        const numberWithoutHyphens = String(cardNumber).replace(/-/g, "");
+        const formattedNumber = numberWithoutHyphens.replace(/(\d{4})(?=\d)/g, "$1-");
+        return formattedNumber;
+    };
     
     const handleNavigate = (url,state) => {
         navigate(url,state);
     }
 
     return (
-        <div className="fixed top-0 left-0 w-full h-full bg-gray-300 flex items-center justify-center">
-            <div className="bg-blue-900 p-8 shadow-2xl rounded-3xl">
-                <div className="w-full flex items-center justify-between">
-                    <button className="bg-white text-orange-400 border-2 border-orange-400 rounded-xl px-10 py-4 " 
+        <div className="w-full bg-neutral-950">
+            <Navbar sectionTitle = "Balance"/>
+            <div className="w-full">
+                <h3 className="text-5xl italic text-white text-center font-semibold mb-12 ">Datos de su tarjeta</h3>
+            { cardData && (
+                <div className="w-full flex items-center justify-center">
+                <div className="w-6/12 p-8 text-white">
+                    <div className="py-4 border-b border-white mb-4">
+                        <h4 className="text-yellow-400 text-4xl italic text-center mb-2">Numero de Tarjeta</h4>
+                        <p className="text-2xl text-center my-4">{formatCardNumber(cardData.numero)}</p>
+                    </div>
+                    <div className="py-4 border-b border-white mb-4">
+                        <h4 className="text-yellow-400 text-4xl italic text-center mb-2">Fecha de vencimiento</h4>
+                        <p className="text-2xl text-center my-4">{cardData.fechaVencimiento}</p>
+                    </div>
+                    <div className="py-4 border-b border-white mb-4">
+                        <h4 className="text-green-400 text-4xl italic text-center mb-2">Saldo en cuenta</h4>
+                        <p className="text-2xl text-center my-4">${cardData.balance}</p>
+                    </div>
+                    <div className="w-full flex items-center justify-center mt-20">
+                    <button className="bg-gray-700 hover:bg-yellow-500 w-72 px-8 py-4 hover:bg-yellow-500 text-white font-bold rounded-3xl duration-500 transition-transform transform hover:scale-105 " 
                         onClick={() => {
                             handleNavigate('/operations',{ state: { id: ID } })
                         }}
@@ -43,28 +65,9 @@ const Balance = () => {
                         Atras
                     </button>
 
-                    <button className="bg-red-600 text-white rounded-xl px-10 py-4 " 
-                        onClick={() => {
-                            handleNavigate('/home')
-                        }}
-                    >
-                        
-                        Salir
-                    </button>
                 </div>
-                <h2 className="text-5xl text-white text-center italic font-semibold mb-12"> Balance </h2>
-                <p className="text-3xl text-white text-center font-semibold mb-12 ">Aqui puede ver los datos de su tarjeta</p>
-            { cardData && (
-                <div className="bg-white rounded-2xl p-8 text-black">
-                    <div className="w-full">
-                        <img src={creditCard} alt="credit-card" 
-                        
-                        />
-                    </div>
-                    <p className="text-2xl text-left my-4">Número de tarjeta: {cardData.numero}</p>
-                    <p className="text-2xl text-left my-4">Fecha de vencimiento: {cardData.fechaVencimiento}</p>
-                    <p className="text-2xl text-left my-4">Balance: ${cardData.balance}</p>
                 </div> 
+                </div>
             )}
             </div>
         </div>

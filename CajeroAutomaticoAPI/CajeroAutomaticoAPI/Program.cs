@@ -1,8 +1,6 @@
-using CajeroAutomaticoAPI.Models;
-using CajeroAutomaticoAPI.Repositories.Interfaces;
-using CajeroAutomaticoAPI.Repositories;
+using CajeroAutomaticoAPI.Data.Models;
+using CajeroAutomaticoAPI.Data.Repositories;
 using Microsoft.EntityFrameworkCore;
-using CajeroAutomaticoAPI.Repositories.Services;
 
 namespace CajeroAutomaticoAPI
 {
@@ -10,8 +8,6 @@ namespace CajeroAutomaticoAPI
     {
         public static void Main(string[] args)
         {
-            var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
-
             var builder = WebApplication.CreateBuilder(args);
 
             builder.Services.AddDbContext<CajeroAutomaticoDbContext>(options =>

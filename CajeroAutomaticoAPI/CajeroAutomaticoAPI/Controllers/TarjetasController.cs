@@ -1,5 +1,5 @@
-﻿using CajeroAutomaticoAPI.Models;
-using CajeroAutomaticoAPI.Repositories.Interfaces;
+﻿using CajeroAutomaticoAPI.Data.Models;
+using CajeroAutomaticoAPI.Data.Repositories;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,31 +11,33 @@ namespace CajeroAutomaticoAPI.Controllers
     {
         private readonly ITarjetaRepository _tarjetaRepository;
 
+
         public TarjetasController(ITarjetaRepository tarjetaRepository)
         {
             _tarjetaRepository = tarjetaRepository;
         }
 
         [HttpGet("{numero}")]
-        public IActionResult ValidateTarjeta(long numero, int? pin)
-        {
-            try
+            public async Task<IActionResult> ValidateTarjeta(long numero, int? pin)
             {
-                TarjetaResponse response = _tarjetaRepository.ValidateTarjeta(numero, pin);
-                return Ok(response);
+                try
+                {
+                    var response = await _tarjetaRepository.ValidateTarjetaAsync(numero, pin);
+                    return Ok(response);
+                }
+                catch (Exception ex)
+                {
+                    return StatusCode(500, new { message = $"Ocurrió un error al validar la tarjeta: {ex.Message}" });
+                }
             }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new { message = $"Ocurrió un error al validar la tarjeta: {ex.Message}" });
-            }
-        }
+
 
         [HttpGet("GetById/{id}")]
-        public IActionResult GetTarjetaById(int id)
+        public async Task<IActionResult> GetTarjetaById(int id)
         {
             try
             {
-                TarjetaResponse response = _tarjetaRepository.GetTarjetaById(id);
+                var response = await _tarjetaRepository.GetTarjetaByIdAsync(id);
 
                 return Ok(response);
             }
@@ -45,27 +47,33 @@ namespace CajeroAutomaticoAPI.Controllers
             }
         }
 
-
-        [HttpPut("BloquearTarjeta/{id}")]
-        public IActionResult BloquearTarjeta(int id)
+        [HttpPut("UpdateIntentos/{id}")]
+        public async Task<IActionResult> UpdateIntentos(int id,int intentos)
         {
+
             try
             {
-                TarjetaResponse response = _tarjetaRepository.BloquearTarjeta(id);
-                return Ok(response);
+                if (intentos >= 0 && intentos <= 4) {
+                    var response = await _tarjetaRepository.UpdateIntentosAsync(id, intentos);
+                    return Ok(response);
+                }
+                else
+                {
+                    return BadRequest("Intentos Invalidos");
+                }
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { message = $"Error al actualizar el estado de bloqueo de la tarjeta: {ex.Message}" });
+                return StatusCode(500, $"Error al actualizar los intentos y bloquear la tarjeta: {ex.Message}");
             }
         }
 
         [HttpPut("UpdateBalance/{id}")]
-        public IActionResult UpdateBalance(int id,decimal amount)
+        public async Task<IActionResult> UpdateBalance(int id,decimal amount)
         {
             try
             {
-                TarjetaResponse response = _tarjetaRepository.UpdateBalance(id, amount);
+                var response = await _tarjetaRepository.UpdateBalanceAsync(id, amount);
                 return Ok(response);
             }
             catch (Exception ex)
@@ -74,5 +82,16 @@ namespace CajeroAutomaticoAPI.Controllers
             }
         }
 
+        [HttpGet("UltimaOperacion/{idTarjeta}")]
+        public async Task<IActionResult> GetLastOperation(int idTarjeta)
+        {
+            var lastOperation = await _tarjetaRepository.GetLastOperationAsync(idTarjeta);
+            if (lastOperation.Count() == 0)
+            {
+                return NotFound();
+            }
+
+            return Ok(lastOperation);
+        }
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace CajeroAutomaticoAPI.Models
+﻿namespace CajeroAutomaticoAPI.Data.Models
 {
     public class OperacionResponse
     {

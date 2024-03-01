@@ -7,6 +7,7 @@ const Home = () => {
   const navigate = useNavigate();
   const url = "https://localhost:44365/api/Tarjetas/";
   const [cardNumber, setCardNumber] = useState("");
+  const exampleCardNumber = "XXXX - XXXX - XXXX - XXXX";
 
   const handleKeyPress = (digit) => {
     let approvedCard = false;
@@ -26,11 +27,11 @@ const Home = () => {
 
     if (digit == "accept" && approvedCard) {
       const num = cardNumber.replace(/-/g, "");
-      getTarjeta(num);
+      validateTarjeta(num);
     }
   };
 
-  const getTarjeta = async (num) => {
+  const validateTarjeta = async (num) => {
     try {
       const response = await axios.get(url + num);
       handleNavigate(response,num);
@@ -49,31 +50,42 @@ const Home = () => {
       }
   }
 
-  return (
-    <>
-      <div className="fixed top-0 left-0 w-full h-full bg-gray-300 flex items-center justify-center">
-        <div className="bg-blue-900 p-8 shadow-2xl">
-            <div className="flex items-center justify-center mb-8">
-            <h3 className="text-6xl text-white font-bold">ATM</h3>
-        </div>
-          <div className="my-4">
-          <p className="text-2xl text-center text-white italic mb-8">
-            Ingrese los 16 digitos de su tarjeta para continuar
-          </p>
+  const handleCardNumberChange = (event) => {
+    const { value } = event.target;
+    if (value.length <= 19) {
+        setCardNumber(value);
+      }
+  };
 
-            <input
-              type="text"
-              value={cardNumber}
-              readOnly
-              className="mb-8 bg-transparent border rounded-2xl border-white w-full h-12 text-center text-xl font-bold outline-none rounded-md p-2 text-white placeholder-white"
-            />
-            </div>
-          <div className="relative w-full flex items-center justify-center">
-            <Keyboard onKeyPress={handleKeyPress} />
-          </div>
-        </div>
+  return (
+    <div className="w-full h-screen bg-neutral-950">
+        <div className="w-full flex items-center justify-around mb-36 border-b-2 border-yellow-400 py-4">
+        <button
+            disabled
+        >
+        </button>
+        <h2 className="text-6xl text-white font-bold">ATM</h2>
+        <p className="w-26 text-lg text-white font-semibold">Ingreso Tarjeta</p>
       </div>
-    </>
+    <div className="flex justify-around items-center w-full">
+      <div className="w-2/5 p-4 mb-32">
+        <p className="text-4xl text-center italic text-yellow-400 font-semibold mb-16">
+          Ingrese los 16 dígitos de su tarjeta
+        </p>
+        <input
+          type="text"
+          value={cardNumber}
+          onChange={handleCardNumberChange}
+          placeholder={exampleCardNumber}
+          readOnly
+          className="w-full h-16 bg-transparent border-b border-white px-4 text-center text-white text-3xl rounded-none outline-none"
+        />
+      </div>
+      <div className="w-2/5 p-4 flex items-center justify-center">
+        <Keyboard onKeyPress={handleKeyPress} />
+      </div>
+    </div>
+  </div>
   );
 };
 

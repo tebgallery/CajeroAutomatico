@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace CajeroAutomaticoAPI.Models;
+namespace CajeroAutomaticoAPI.Data.Models;
 
 public partial class Operacion
 {
@@ -13,5 +13,5 @@ public partial class Operacion
 
     public int CodigoOperacion { get; set; }
 
-    public decimal? CantidadRetirada { get; set; }
+    public decimal CantidadRetirada { get; set; }
 }

@@ -1,9 +1,26 @@
 ﻿using Azure;
-using CajeroAutomaticoAPI.Models;
-using CajeroAutomaticoAPI.Repositories.Interfaces;
+using CajeroAutomaticoAPI.Data.Models;
+using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
+using System.Data;
+using System.Runtime;
 
-namespace CajeroAutomaticoAPI.Repositories
+namespace CajeroAutomaticoAPI.Data.Repositories
 {
+    public interface ITarjetaRepository
+    {
+        Task<TarjetaResponse> ValidateTarjetaAsync(long num, int? pin);
+
+        Task<TarjetaResponse> GetTarjetaByIdAsync(int id);
+
+        Task<TarjetaResponse> UpdateIntentosAsync(int id, int intentos);
+
+        Task<TarjetaResponse> UpdateBalanceAsync(int id, decimal amount);
+
+        Task<IEnumerable<LastOperation>> GetLastOperationAsync(int idTarjeta);
+
+        Task SaveChangesAsync();
+    }
     public class TarjetaRepository : ITarjetaRepository
     {
         private readonly CajeroAutomaticoDbContext _context;
@@ -13,11 +30,11 @@ namespace CajeroAutomaticoAPI.Repositories
             _context = context;
         }
 
-        public TarjetaResponse ValidateTarjeta(long num, int? pin)
+        public async Task<TarjetaResponse> ValidateTarjetaAsync(long num, int? pin)
         {
             TarjetaResponse response = new TarjetaResponse();
 
-            var tarjeta = _context.Tarjetas.FirstOrDefault(t => t.Numero == num);
+            var tarjeta = await _context.Tarjetas.FirstOrDefaultAsync(t => t.Numero == num);
 
             if (tarjeta == null)
             {
@@ -45,11 +62,11 @@ namespace CajeroAutomaticoAPI.Repositories
             return response;
         }
 
-        public TarjetaResponse GetTarjetaById(int id)
+        public async Task<TarjetaResponse> GetTarjetaByIdAsync(int id)
         {
             var response = new TarjetaResponse();
 
-            var tarjeta = _context.Tarjetas
+            var tarjeta = await _context.Tarjetas
                 .Where(t => t.IdTarjeta == id)
                 .Select(t => new
                 {
@@ -58,7 +75,7 @@ namespace CajeroAutomaticoAPI.Repositories
                     t.FechaVencimiento,
                     t.Balance
                 })
-                .FirstOrDefault();
+                .FirstOrDefaultAsync();
 
             if (tarjeta == null)
             {
@@ -76,29 +93,50 @@ namespace CajeroAutomaticoAPI.Repositories
             return response;
         }
 
-        public TarjetaResponse BloquearTarjeta(int id) 
+        public async Task<TarjetaResponse> UpdateIntentosAsync(int id, int intentos)
         {
-            TarjetaResponse response = new TarjetaResponse();
-            var tarjeta = _context.Tarjetas.Find(id);
+            var response = new TarjetaResponse();
+            var tarjeta = await _context.Tarjetas.FindAsync(id);
             if (tarjeta != null)
             {
-                tarjeta.Bloqueada = true;
-                _context.SaveChanges();
-                response.status = new Status { Message = "Tarjeta Bloqueada Correctamente", Code = 0 };
+                if (!tarjeta.Bloqueada)
+                {
+                    if (intentos != 0)
+                    {
+                        tarjeta.Intentos = intentos;
+                        response.status.Code = 0;
+                        response.status.Message = $"Pin Incorrecto, le quedan {intentos} intentos";
+                    }
+                    else
+                    {
+                        tarjeta.Intentos = intentos;
+                        tarjeta.Bloqueada = true;
+
+                        response.status.Code = 1;
+                        response.status.Message = "La tarjeta se bloqueó debido a muchos intentos fallidos";
+
+                    }
+                }
+                else
+                 {
+                     response.status.Code = 2;
+                     response.status.Message = "La tarjeta se encuentra bloqueada";
+                }
             }
             else
             {
-                response.status = new Status { Message = "No se encontró la tarjeta", Code = 1 };
+                response.status.Code = 3;
+                response.status.Message = "No se encontró la tarjeta";
             }
+            _context.SaveChanges();
 
             return response;
-
         }
 
-        public TarjetaResponse UpdateBalance(int id, decimal amount)
+        public async Task<TarjetaResponse> UpdateBalanceAsync(int id, decimal amount)
         {
             TarjetaResponse response = new TarjetaResponse();
-            var tarjeta = _context.Tarjetas.Find(id);
+            var tarjeta = await _context.Tarjetas.FindAsync(id);
             if (tarjeta != null)
             {
                 if (amount <= tarjeta.Balance)
@@ -119,9 +157,17 @@ namespace CajeroAutomaticoAPI.Repositories
             return response;
         }
 
-        public void SaveChanges()
+        public async Task<IEnumerable<LastOperation>> GetLastOperationAsync(int idTarjeta)
+        {        
+            var id = new SqlParameter("@CardId", idTarjeta);
+            var response = await _context.LastOperation
+            .FromSqlRaw("EXEC sp_ObtenerUltimaOperacion @CardId", id).ToListAsync();
+
+            return response;
+        }
+        public async Task SaveChangesAsync()
         {
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
     }
 }

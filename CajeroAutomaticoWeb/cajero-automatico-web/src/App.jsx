@@ -6,6 +6,7 @@ import PinEntry from './pages/PinEntry/PinEntry';
 import Operations from './pages/Operations/Operations';
 import Balance from './pages/Operations/Balance';
 import Withdrawal from './pages/Operations/Withdrawal';
+import OperationReport from './pages/Operations/OperationReport';
 
 const App = () => {
   return (
@@ -17,6 +18,7 @@ const App = () => {
         <Route path='/operations' element = {<Operations/>}></Route>
         <Route path='/operations/balance' element = {<Balance/>}></Route>
         <Route path='/operations/withdrawal' element = {<Withdrawal/>}></Route>
+        <Route path='/operations/report' element = {<OperationReport/>}></Route>
       </Routes>
 
     </Router>

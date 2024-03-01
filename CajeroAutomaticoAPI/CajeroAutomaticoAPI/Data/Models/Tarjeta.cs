@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace CajeroAutomaticoAPI.Models;
+namespace CajeroAutomaticoAPI.Data.Models;
 
 public partial class Tarjeta
 {
@@ -13,6 +13,7 @@ public partial class Tarjeta
 
     public bool Bloqueada { get; set; }
 
+    public int Intentos { get; set; }
     public decimal Balance { get; set; }
 
     public DateOnly FechaVencimiento { get; set; }
